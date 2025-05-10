@@ -1,0 +1,159 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+@model List<EasyTravel.Models.Destination>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <!-- Sol Menü -->
+        <div class="col-md-3 bg-dark text-white p-4">
+            <h3 class="mb-4">EasyTravel</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" href="/TravelRoutes">🏙️ Seyahat Rotaları</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" href="/FlightInfos">✈️ Uçuş Bilgileri</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" href="/Hotels">🏨 Oteller</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" href="/Tours">🧳 Turlar</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Sağ İçerik -->
+        <div class="col-md-9 p-5">
+            <h2>EasyTravel’a Hoş Geldiniz!</h2>
+            <p class="lead">Hayalinizdeki tatili planlamaya başlamak için doğru yerdesiniz.</p>
+
+            <div class="alert alert-info mt-4">
+                Daha fazla bilgi almak için giriş yapın ya da üye olun.
+            </div>
+
+            <div class="mt-4">
+                <button class="btn btn-primary me-2" onclick="showLogin()">Giriş Yap</button>
+                <button class="btn btn-success" onclick="showSignup()">Üye Ol</button>
+            </div>
+
+            <!-- Giriş Yap Formu -->
+            <div id="loginForm" class="mt-4 d-none">
+                <h4>Giriş Yap</h4>
+                <form id="loginFormSubmit">
+                    <div class="mb-3">
+                        <label for="loginEmail" class="form-label">E-posta</label>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="E-postanızı girin">
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Şifre</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Şifrenizi girin">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                </form>
+            </div>
+
+            <!-- Üye Ol Formu -->
+            <div id="signupForm" class="mt-4 d-none">
+                <h4>Üye Ol</h4>
+                <form id="signupFormSubmit">
+                    <div class="mb-3">
+                        <label for="signupFullName" class="form-label">Ad Soyad</label>
+                        <input type="text" class="form-control" id="signupFullName" placeholder="Adınızı ve soyadınızı girin">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signupPhone" class="form-label">Telefon Numarası</label>
+                        <input type="text" class="form-control" id="signupPhone" placeholder="Telefon numaranızı girin">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signupEmail" class="form-label">E-posta</label>
+                        <input type="email" class="form-control" id="signupEmail" placeholder="E-postanızı girin">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signupPassword" class="form-label">Şifre</label>
+                        <input type="password" class="form-control" id="signupPassword" placeholder="Şifre belirleyin">
+                    </div>
+                    <button type="submit" class="btn btn-success">Kayıt Ol</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Formları Göster/Gizle Script -->
+<script>
+    function showLogin() {
+        document.getElementById('loginForm').classList.remove('d-none');
+        document.getElementById('signupForm').classList.add('d-none');
+    }
+
+    function showSignup() {
+        document.getElementById('signupForm').classList.remove('d-none');
+        document.getElementById('loginForm').classList.add('d-none');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        showLogin();
+    });
+
+    // AJAX ile giriş yap
+    document.getElementById('loginFormSubmit').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        let email = document.getElementById('loginEmail').value;
+        let password = document.getElementById('loginPassword').value;
+
+        fetch('/Authentication/Login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email, password: password })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/Home/Index'; // Giriş başarılı, ana sayfaya yönlendir
+                } else {
+                    alert(data.message); // Hata mesajını göster
+                }
+            });
+    });
+
+    // AJAX ile üye ol
+    document.getElementById('signupFormSubmit').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        let email = document.getElementById('signupEmail').value;
+        let password = document.getElementById('signupPassword').value;
+        let fullName = document.getElementById('signupFullName').value;
+        let phoneNumber = document.getElementById('signupPhone').value;
+
+        fetch('/Authentication/Register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                Email: email,
+                Password: password,
+                FullName: fullName,
+                PhoneNumber: phoneNumber
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Kayıt başarılı. Giriş yapabilirsiniz.");
+                    showLogin();
+                } else {
+                    alert(data.message);
+                }
+            });
+    });
+
+</script>

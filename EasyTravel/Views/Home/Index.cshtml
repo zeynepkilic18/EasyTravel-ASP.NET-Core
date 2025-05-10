@@ -1,0 +1,141 @@
+﻿ @{
+    ViewData["Title"] = "Index";
+}
+@model EasyTravel.Models.DashboardPageViewModel
+
+@{
+    var user = ViewBag.User as EasyTravel.Models.User;
+    var destinations = ViewBag.Destinations as List<EasyTravel.Models.Destination>;
+    
+}
+
+@{
+    var userEmail = ViewBag.UserEmail as string;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .dashboard-container {
+            margin-top: 50px;
+        }
+
+        .card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .welcome-box {
+            background: linear-gradient(to right, #4facfe, #4facfe);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+            .welcome-box h2 {
+                margin-bottom: 0;
+            }
+    </style>
+</head>
+<body>
+    <div class="container dashboard-container">
+        <div class="welcome-box text-center">
+            <h2><i class="bi bi-person-circle me-2"></i>Hoş Geldin!</h2>
+            <p class="lead">Seyahat etmeye hazır mısın?</p>
+        </div>
+
+        <div class="row">
+            <!-- Seyahat Arama Formu -->
+            <div class="col-md-6 mb-4">
+                <div class="card p-4">
+                    <h4 class="section-title"><i class="bi bi-search me-2"></i>Seyahat Ara</h4>
+                    <form>
+                        <div class="mb-3">
+                            <label for="destination" class="form-label">Hedef Nokta</label>
+                            <input type="text" id="destination" class="form-control" placeholder="Örneğin: İstanbul">
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Tarih</label>
+                            <input type="date" id="date" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Maksimum Fiyat</label>
+                            <input type="number" id="price" class="form-control" placeholder="Örneğin: 500">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Ara</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Kullanıcı Bilgileri ve Öneriler -->
+            <div class="col-md-6 mb-4">
+                <div class="card p-4">
+                    <h4 class="section-title"><i class="bi bi-person-lines-fill me-2"></i>Profil Bilgileri</h4>
+                    <p><strong>E-posta:</strong> @ViewBag.UserEmail</p> <!-- Giriş yapan email veya "Giriş yapmadınız" -->
+                    <p><strong>Telefon:</strong> Gizli</p>
+                    <a asp-controller="Users" asp-action="Edit"  class="btn btn-secondary">Profili Düzenle</a>
+                    <a href="#" id="logoutBtn" class="btn btn-danger">Çıkış Yap</a>
+
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3"><i class="bi bi-stars me-2"></i>Önerilen Rotalar</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item">İstanbul Boğaz Turu 🌊</li>
+                        <li class="list-group-item">Kapadokya Balon Gezisi 🎈</li>
+                        <li class="list-group-item">Antalya Tatil Paketi ☀️</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    document.getElementById("logoutBtn").addEventListener("click", function (e) {
+        e.preventDefault(); // Linkin normal davranışını engelle
+
+        fetch("/Authentication/Logout", {
+            method: 'GET', // Logout işlemi için GET 
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Çıkış işlemi başarısız oldu');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    alert("Çıkış yapılamadı: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error); 
+                alert("Bir hata oluştu: " + error.message);
+            });
+    });
+
+
+</script>

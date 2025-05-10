@@ -1,0 +1,89 @@
+﻿<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-image: url('/images/travel-bg.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.3); 
+        z-index: -1;
+    }
+
+    .content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .card {
+        background-color: rgba(255, 255, 255, 0.8); 
+        backdrop-filter: blur(2px);
+    }
+</style>
+
+
+<div class="overlay"></div>
+
+
+<div class="content">
+</div>
+
+
+<div class="overlay"></div>
+
+<div class="content">
+ 
+</div>
+
+@model IEnumerable<EasyTravel.Models.TravelRoute>
+@{
+    Layout = "_Layout";
+}
+
+<h2 class="text-center my-4 display-5 fw-semibold text-success">🧳 Seyahat Rotaları</h2>
+
+<div class="container">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle text-center shadow-sm rounded-4">
+            <thead class="table-success text-dark">
+                <tr>
+                    <th>📍 Rota Adı</th>
+                    <th>📄 Açıklama</th>
+                    <th>⏳ Süre</th>
+                    <th>💰 Fiyat</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var route in Model)
+                {
+                    <tr style="background-color: @GetRowBackgroundColor(route.Price)">
+                        <td class="fw-bold">@route.RouteName</td>
+                        <td>@route.Description</td>
+                        <td>@route.Duration saat</td>
+                        <td><strong>$@route.Price</strong></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@functions {
+    private string GetRowBackgroundColor(decimal price)
+    {
+        if (price < 200)
+            return "#FFFDE7";  // Açık sarı
+        if (price < 500)
+            return "#E8F5E9";  // Açık yeşil
+        return "#FBE9E7";      // Açık kırmızımsı
+    }
+}

@@ -1,0 +1,92 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+@model EasyTravel.Models.DashboardPageViewModel
+
+@{
+    var user = ViewBag.User as EasyTravel.Models.User;
+    var destinations = ViewBag.Destinations as List<EasyTravel.Models.Destination>;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Sol Kısım - Seyahat Arama Formu -->
+            <div class="col-md-6">
+                <h3>Seyahat Arama</h3>
+                <form asp-action="Search" method="post">
+                    
+                    <button type="submit" class="btn btn-primary">Ara</button>
+                </form>
+
+                @if (Model.Travels != null && Model.Travels.Any())
+                {
+                    <h4 class="mt-4">Destinasyonlar</h4>
+                    <ul class="list-group">
+                        @foreach (var travel in Model.Travels)
+                        {
+                            <li class="list-group-item">
+                                <strong>@travel.Destination.City</strong>, @travel.Destination.Country
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>Hiç destinasyon bulunamadı.</p>
+                }
+
+
+            </div>
+
+            <!-- Sağ Kısım - Profil Bilgileri -->
+            <div class="col-md-6">
+                <h3>Profil Bilgileri</h3>
+                <div class="mb-3">
+                    <strong>Ad:</strong> @user.Email
+                </div>
+                <div class="mb-3">
+                    <strong>E-posta:</strong> @user.Email
+                </div>
+                <div class="mb-3">
+                    <strong>Telefon:</strong> @user.Password  <!-- Bu kısmı başka bir modelle düzeltebilirsiniz -->
+                </div>
+                <a asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-secondary">Profili Düzenle</a>
+                <!-- Çıkış Yap Butonu -->
+                <a href="#" id="logoutBtn" class="btn btn-danger">Çıkış Yap</a>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+<script>
+    document.getElementById("logoutBtn").addEventListener("click", function (e) {
+        e.preventDefault();
+
+        fetch("/Authentication/Logout", {
+            method: 'GET', // Logout işlemi için GET 
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirectUrl; 
+                } else {
+                    alert("Çıkış yapılamadı!");
+                }
+            });
+    });
+
+</script>
+

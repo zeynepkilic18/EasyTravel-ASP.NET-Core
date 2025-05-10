@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\EasyTravel.props" />
+</Project>

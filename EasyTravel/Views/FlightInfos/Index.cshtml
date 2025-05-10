@@ -1,0 +1,41 @@
+﻿@model IEnumerable<EasyTravel.Models.FlightInfo>
+@{
+    Layout = "_Layout";
+}
+
+<h2 class="text-center my-4">Uçuş Bilgileri</h2>
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var flight in Model)
+        {
+            <div class="col">
+                <div class="card shadow-lg rounded" style="background-color: @GetCardBackgroundColor(flight.Price)">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@flight.Airline - @flight.FlightNumber</h5>
+                        <p class="card-text">
+                            <strong>Kalkış:</strong> @flight.DepartureLocation<br />
+                            <strong>Varış:</strong> @flight.ArrivalLocation<br />
+                            <strong>Tarih:</strong> @flight.DepartureDate.ToShortDateString()<br />
+                            <strong>Süre:</strong> @flight.FlightDuration<br />
+                            <strong>Fiyat:</strong> $@flight.Price<br />
+                            <strong>Kapı:</strong> @flight.Gate
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    private string GetCardBackgroundColor(decimal price)
+    {
+        // Fiyat aralıklarına göre farklı renkler 
+        if (price < 200)
+            return "#D1E8E2"; // Yeşil tonları
+        if (price < 500)
+            return "#F6D02F"; // Sarı tonları
+        return "#D1E8E2"; 
+    }
+}

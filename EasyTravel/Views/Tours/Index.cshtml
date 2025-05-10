@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@model List<EasyTravel.Models.Tour>
+
+<h2>Turlar</h2>
+
+@foreach (var tour in Model)
+{
+    <div class="card mt-3">
+        <div class="card-body">
+            <h4>@tour.Name</h4>
+            <p><strong>Lokasyon:</strong> @tour.Location</p>
+            <p><strong>Açıklama:</strong> @tour.Description</p>
+            <p><strong>Süre:</strong> @tour.DurationInDays gün</p>
+            <p><strong>Fiyat:</strong> @tour.Price ₺</p>
+        </div>
+    </div>
+}
